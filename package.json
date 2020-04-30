@@ -3,12 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/polyfill": "^7.8.7",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "babel-plugin-css-in-js": "^1.5.1",
+    "babel-polyfill": "6.26.0",
+    "classnames": "^2.2.5",
+    "element-resize-detector": "^1.1.9",
+    "iscroll": "github:zhm/iscroll#larger-scrollbars-with-pointer-events",
+    "jss": "^10.1.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "react-jss": "10.1.1",
+    "react-proptypes": "^1.0.0",
+    "react-scripts": "3.4.1",
+    "react-virtual-grid": "^0.1.0",
+    "react-dropzone": "^10.2.2",
+    "react-draggable": "^4.2.0",
+    "react-dnd": "^10.0.2",
+    "react-dnd-html5-backend": "^10.0.2",
+    "jquery": "^3.4.1",
+    "styled-components": "5.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -29,6 +45,17 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ],
+    "keywords": [
+      "grid",
+      "table",
+      "data",
+      "tableview"
     ]
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5"
   }
 }
