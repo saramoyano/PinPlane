@@ -1,9 +1,8 @@
-import React, { useState, useCallback} from "react";
+import React, { useState, useCallback,createContext} from "react";
 import { useDropzone } from "react-dropzone";
 import Draggable from "react-draggable";
 import "../../../../src/css/App.css";
 // const pos;
-
 function ImgIt() {
 
   const [buttonState, setButtonState] = useState(false);

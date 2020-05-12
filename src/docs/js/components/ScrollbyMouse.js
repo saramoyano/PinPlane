@@ -1,40 +1,14 @@
 
-export default function DragWindow(value,setValue) {
+export default function DragWindow() {
     let isDown = false;
     let startX;
     let scrollLeft;
     var scrollTop
     let startY;
     const slider = document.querySelector("#Grid_PinPlane") ;
-    const img=document.getElementsByClassName("card react-draggable");
-        for (var i = 0 ; i < img.length; i++) {
-            img[i].addEventListener("mousedown", (e) => {
-                setValue(true);
-                isDown = false;
-              });
-              img[i].addEventListener("mouseup", (e) => {
-                setValue(false);
-                isDown = false;
-              });
-            img[i].addEventListener("mousemove", (e) => {
-            setValue(true);
-            isDown = false;
-          });
-            img[i].addEventListener("mouseleave", (e) => {
-            setValue(false);
-            isDown = false;
-          });
-          img[i].addEventListener("mouseout", (e) => {
-            setValue(false);
-            isDown = false;
-          });
-        }
     
-
-
 function RespondMouseDown(e){
     slider.classList.add('active');
-    setValue(false);
     isDown = true;
     startX = e.pageX - slider.offsetLeft;
     scrollLeft = slider.scrollLeft;
@@ -42,12 +16,10 @@ function RespondMouseDown(e){
     startY = e.pageY - slider.offsetTop;
 }
 function RespondMouseUp() {
-    setValue(true);
     isDown = false;
     slider.classList.remove('active');
 }
 function RespondLeave() {
-    setValue(true);
     isDown = false;
     slider.classList.remove('active');
 }
@@ -62,7 +34,7 @@ function RespondMouseMove(e) {
    slider.scrollTop = scrollTop - walk2;
 }
 
-  if (slider != null && value===false) {
+  if (slider != null) {
             slider.addEventListener("mousedown",(e)=> RespondMouseDown(e));
               slider.addEventListener("mouseleave",RespondLeave);
               slider.addEventListener("mouseup",RespondMouseUp);

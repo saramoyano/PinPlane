@@ -7,7 +7,7 @@ import useMousePosition from "./useMousePosition";
 import useForceUpdate from "use-force-update";
 import DragWindow from "./ScrollbyMouse";
 import ImgIt from "./ImgItem";
-import { dragImgItm } from "../pages/App";
+// import {dragImgItm} from '../components/ImgItem';
 var scroll = false;
 function AddNewArray() {
   itemsArray.push(new Array(itemsArray[0].length));
@@ -43,9 +43,9 @@ export default function ImgList() {
   const forceUpdate = useForceUpdate();
   const {x} = useMousePosition();
   const ancho = panel.clientWidth;
-  const { value, setValue } = useContext(dragImgItm);
+  // const { value, setValue } = useContext(dragImgItm);
   var isPossible = scroll === true && x >= ancho - 200;
-  DragWindow(value, setValue);
+  DragWindow();
 
   if (isPossible) {
     AddNewArray();
