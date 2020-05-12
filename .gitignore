@@ -17,11 +17,10 @@
 .env.development.local
 .env.test.local
 .env.production.local
-docprueba.js
-imagenPrueba.js
-ImgItem copy.js
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 _site
-src/docs/js/components/docprueba.js
+src/docs/js/components/Plane.js
+src/docs/js/pages/App.js
+src/docs/js/components/JuanCarlos.js
