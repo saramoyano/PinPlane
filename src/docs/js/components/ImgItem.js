@@ -4,13 +4,12 @@ import Draggable from "react-draggable";
 import "../../../../src/css/App.css";
 // const pos;
 
-function ImgIt() {
+function ImgIt(props) {
 
   const [buttonState, setButtonState] = useState(false);
   const [currentIMG, setCurrentImg] = useState("");
   const [dropIMG, setDropIMG] = useState("");
   const [srcImg, setSrcImg] = useState("");
-
   const [state, setState] = useState({
     controlledPosition: {
       x: 0, 
@@ -21,6 +20,7 @@ function ImgIt() {
 
     const { x, y } = position; // actualizo la posicion del item
     setState({ controlledPosition: { x, y } });
+ 
   };
   const onDrop = useCallback((acceptedFiles) => {
     let string = acceptedFiles[0].name.split("\\");

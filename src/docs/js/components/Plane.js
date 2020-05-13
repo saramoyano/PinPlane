@@ -1,4 +1,4 @@
-import React, { useContext, useEffect} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Grid as PinPlane } from "react-virtualized";
 import "../../../css/style.css";
 import AutoSizer from "react-virtualized-auto-sizer";
@@ -9,17 +9,36 @@ import DragWindow from "./ScrollbyMouse";
 import ImgIt from "./ImgItem";
 import { dragImgItm } from "../pages/App";
 var scroll = false;
+
 function AddNewArray() {
-  itemsArray.push(new Array(itemsArray[0].length));
-}
-function arrayVertical() {
+  var x = itemsArray.length;
+  x++;
+  console.log(itemsArray);
+  itemsArray.push(new Array(x));
   for (let i = 0; i < itemsArray.length; i++) {
-    itemsArray[i].push(new Array([""]));
+    itemsArray[i].length = x;
+    for (let j = 0; j < itemsArray[i].length; j++) {
+      if (itemsArray[i][j] !== "a") {
+        itemsArray[i][j] = "a";
+      }
+    }
   }
 }
+// function arrayVertical() {
+// }
+
+// function AddNewArray() {
+//   itemsArray.push(new Array(itemsArray[0].length));
+// }
+// function arrayVertical() {
+//   for (let i = 0; i < itemsArray.length; i++) {
+//     itemsArray[i].push(new Array([""]));
+//   }
+// }
 
 function cellRenderer({ columnIndex, key, rowIndex, isScrolling, style }) {
   scroll = isScrolling;
+  //console.log(itemsArray);
   return (
     <div
       key={key}
@@ -35,25 +54,33 @@ function cellRenderer({ columnIndex, key, rowIndex, isScrolling, style }) {
     </div>
   );
 }
+
 export default function ImgList() {
+  var panel = document.getElementById("root");
+  const forceUpdate = useForceUpdate();
+  const { x, y } = useMousePosition();
+  const ancho = panel.clientWidth;
+  const alto = panel.clientHeight;
+  const { value, setValue } = useContext(dragImgItm);
+  var isPossible = scroll === true;
+  DragWindow(value, setValue);
+
+  if (x >= ancho || y >= alto) {
+    AddNewArray();
+    // arrayVertical();
+  }
 
   itemsArray[0][3] = <ImgIt />;
   itemsArray[1][3] = <ImgIt />;
-  var panel = document.getElementById("root");
-  const forceUpdate = useForceUpdate();
-  const {x} = useMousePosition();
-  const ancho = panel.clientWidth;
-  const { value, setValue } = useContext(dragImgItm);
-  var isPossible = scroll === true && x >= ancho - 200;
-  DragWindow(value, setValue);
 
   if (isPossible) {
     AddNewArray();
   }
   //vertical
-  if (isPossible) {
-    arrayVertical();
-  }
+  // if (isPossible) {
+  //   arrayVertical();
+  // }
+
   useEffect(() => {
     return () => {
       forceUpdate();
