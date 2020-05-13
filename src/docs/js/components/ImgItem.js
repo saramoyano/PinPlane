@@ -52,8 +52,7 @@ function ImgIt() {
   };
   const controlledPosition = state.controlledPosition;
   return (
-    
-<Draggable position={controlledPosition} onDrag={onControlledDrag} >
+<Draggable position={controlledPosition} onDrag={onControlledDrag} bounds={"#Grid_PinPlane > div"}>
     <div className="card">
       <div className="card-image">
         {!buttonState ? (

@@ -1,7 +1,7 @@
-import React ,{useState} from "react";
- import { DndProvider } from 'react-dnd'
+import React from "react";
+//  import { DndProvider } from 'react-dnd'
 import Plane from '../components/Plane';
- import Backend from "react-dnd-html5-backend";
+//  import Backend from "react-dnd-html5-backend";
 //  import {dragImgItm} from '../components/ImgItem';
 
 
