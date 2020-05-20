@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { Grid as PinPlane } from "react-virtualized";
 import "../../../css/style.css";
 import AutoSizer from "react-virtualized-auto-sizer";
@@ -8,6 +8,7 @@ import useForceUpdate from "use-force-update";
 import DragWindow from "./ScrollbyMouse";
 import ImgIt from "./ImgItem";
 import { dragImgItm } from "../pages/App";
+
 var scroll = false;
 // function AddNewArray() {
 //   itemsArray.push(new Array(itemsArray[0].length));
@@ -17,27 +18,35 @@ var scroll = false;
 //     itemsArray[i].push(new Array([""]));
 //   }
 // }
+var posArray = itemsArray;
 function AddNewArray() {
   var x = itemsArray.length;
   x++;
-
   itemsArray.push(new Array(x));
+  var celda;
+  //console.log(itemsArray);
+  //console.log(posArray);
   for (let i = 0; i < itemsArray.length; i++) {
     itemsArray[i].length = x;
+    posArray[i].push(new Array(x));
+    posArray[i].lenght = x;
     for (let j = 0; j < itemsArray[i].length; j++) {
-      if (itemsArray[i][j] !== i.toString + "," + j.toString) {
-        itemsArray[i][j] = "" + i + j;
+      if (itemsArray[i][j] !== i + "" + j) {      
+          itemsArray[i][j] = i + "" + j;
       }
     }
   }
 }
+var idDiv;
 function cellRenderer({ columnIndex, key, rowIndex, isScrolling, style }) {
   scroll = isScrolling;
-  var img = document.getElementsByClassName("card react-draggable");
+
+  let array = "array";
   return (
     <div
       id={rowIndex + "" + columnIndex}
       key={key}
+      name={array}
       style={{
         ...style,
         left: style.left + 30,
@@ -51,88 +60,157 @@ function cellRenderer({ columnIndex, key, rowIndex, isScrolling, style }) {
   );
 }
 
+function doNothing() {}
+
 export default function ImgList() {
-  const [position1, setposition1] = useState({ x: 0, y: 61 });
-  const [position2, setposition2] = useState({ x: 20, y: 200 });
+  const [positionX, setpositionX] = useState(0);
+  const [positionY, setpositionY] = useState(200);
   const [vecY1, setvecY1] = useState(0);
   const [vecX1, setvecX1] = useState(3);
 
-  // sessionStorage.setItem("card1", JSON.stringify(position1));
-  // sessionStorage.setItem("card2", JSON.stringify(position2));
+  const img = document.getElementById("card1");
 
-  itemsArray[vecY1][vecX1] = <ImgIt id={1} position={position1} />;
-  itemsArray[1][3] = <ImgIt id={2} position={position2} />;
-
+  var imgSize = 600;
   var panel = document.getElementById("root");
   const forceUpdate = useForceUpdate();
   const { x, y } = useMousePosition();
   const ancho = panel.clientWidth;
   const alto = panel.clientHeight;
   const { value, setValue } = useContext(dragImgItm);
-  var isPossible = scroll === true && x >= ancho - 200;
+  var isPossible = scroll === true && x >= ancho - imgSize && y >= alto - imgSize;
   DragWindow(value, setValue);
 
   useEffect(() => {
-    setposition1(JSON.parse(sessionStorage.getItem("card1")));
-    setposition2(JSON.parse(sessionStorage.getItem("card2")));
-  }, [sessionStorage.getItem("card1"), sessionStorage.getItem("card2")]);
-
-  if (isPossible) {
     AddNewArray();
-  }
-  //vertical
-  // if (isPossible) {
-  //   arrayVertical();
-  // }
-  useEffect(() => {
+    itemsArray[vecY1][vecX1] = <ImgIt id="card1" position={positionX} />;
     return () => {
       forceUpdate();
     };
-  }, [isPossible]);
+  }, [isPossible, vecY1, vecX1]);
 
-  //In case of error delete this code
+  // useEffect(() => {
+  //   console.log("1er ueff" + vecY1 + vecX1);
+  //   AddNewArray();
+  //   itemsArray[vecY1][vecX1] = <ImgIt id={"card1"} position={positionX} />;
+  // }, []);
+
+  const handleClick = () => {
+    console.log();
+    if (img != null) {
+      // var celda = img.parentElement.parentElement;
+      // if (celda.hasChildNodes()) {
+      //   celda.removeChild(celda.firstChild);
+        var auxX = vecX1 + 1;
+        var auxY = vecY1 + 1;
+        setvecX1(auxX);
+        setvecY1(auxY);
+      // }
+    }
+  };
+
   useEffect(() => {
-    setTimeout(() => {
-      if (
-        position1.x >= ancho ||
-        position2.x >= ancho ||
-        position1.y >= alto ||
-        position2.y >= alto
-      ) {
-        // let suma = vecX1 + 1;
-        // console.log(suma);
-        // setvecX1(10);
-        document.getElementById("#03").removeChild("#1");
-        document.getElementById("#13").removeChild();
+     
+    //   if(img != null){
+    //     setpositionX(img.parentElement.parentElement.offsetLeft);
+    //     setpositionY(img.parentElement.parentElement.offsetLeft);
+    //     console.log("2do ueff" + positionX + positionY);
+    // }
+
+    if (positionX != null && positionX != undefined && positionX != "") {
+      if (positionX >= ancho || positionY >= alto) {
+       console.log("entra");
         AddNewArray();
       }
-    }, 300);
-  }, [
-    sessionStorage.getItem("card1"),
-    sessionStorage.getItem("card2"),
-    vecX1,
-    position1,
-    position2,
-  ]);
+    }
+  }, [img]); //
+
+  const estilo = {
+    width: "100px",
+    height: "100px",
+    position: "absolute",
+    left: "200",
+    top: "200px",
+  };
+
   return (
-    <AutoSizer>
-      {({ height, width }) => (
-        <div style={{ height: height, width: width }}>
-          <PinPlane
-            className="Grid"
-            id="Grid_PinPlane"
-            cellRenderer={cellRenderer}
-            columnCount={itemsArray[0].length}
-            columnWidth={330}
-            height={height}
-            rowCount={itemsArray.length}
-            rowHeight={330}
-            width={width}
-          >
-            <ImgIt />
-          </PinPlane>
-        </div>
-      )}
-    </AutoSizer>
+    <React.Fragment>
+      <AutoSizer>
+        {({ height, width }) => (
+          <div style={{ height: height, width: width }}>
+            <PinPlane
+              className="Grid"
+              id="Grid_PinPlane"
+              cellRenderer={cellRenderer}
+              columnCount={itemsArray[0].length}
+              columnWidth={300}
+              height={height}
+              rowCount={itemsArray.length}
+              rowHeight={300}
+              width={width}
+            >
+              {isPossible ? AddNewArray() : doNothing()}
+            </PinPlane>
+          </div>
+        )}
+      </AutoSizer>
+      <button onClick={handleClick} style={estilo}>
+        Cambiar pos
+      </button>
+    </React.Fragment>
   );
 }
+
+//sessionStorage.setItem("card1", JSON.stringify(positionX));
+//sessionStorage.setItem("card2", JSON.stringify(position2));onclick={(ev)=> {setClicked(true)}}
+
+// itemsArray[vecY1][vecX1] = <ImgIt id={id} position={positionX} />;
+// itemsArray[1][3] = <ImgIt id={2} position={position2} />;
+// useEffect(() => {
+//   setpositionX(JSON.parse(sessionStorage.getItem("card1")));
+//   //setposition2(JSON.parse(sessionStorage.getItem("card2")));, sessionStorage.getItem("card2")
+// }, [sessionStorage.getItem("card1")]);
+
+//  if (isPossible) {
+//    AddNewArray();
+//  }
+//vertical
+// if (isPossible) {
+//   arrayVertical();
+// }
+
+//In case of error delete this code
+//   useLayoutEffect(() => {
+
+//     if(positionX != null && positionX != undefined && positionX !=""){
+//     //|| position2 == null || position2 == undefined || position2=="" ){
+//  //   setpositionX({ x: 0, y: 61 });
+//  //   setposition2({ x: 0, y: 61 });
+//  //   }else{
+//  //     setpositionX(pos1);
+//  //     setposition2(pos2);
+//  //   }
+
+//    // if (img != null){
+//       if( positionX.x >= ancho ||
+//       positionX.y >= alto){
+//         console.log("entra");
+//          AddNewArray();
+
+//        //||  img.offsetTop >= alto ) {
+//    // img.onclick((ev)=> {setClicked(true)});}
+//    //  if(x >= ancho || y >= alto )
+//     //|| position2.y >= alto
+//    //  {
+//        // if(vecX1 != null && vecY1 || null){
+//        //   let suma = vecX1 + 1;
+//        //   console.log(suma);
+//        //   setvecX1(10);
+//        //
+//        // }
+
+//        //
+//       }
+//     }
+//  }, [
+//    x, y, img
+// ]);  //

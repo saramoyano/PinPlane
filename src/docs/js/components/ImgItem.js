@@ -1,17 +1,19 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useContext } from "react";
 import { useDropzone } from "react-dropzone";
 import Draggable from "react-draggable";
 import useMousePosition from "./useMousePosition";
 import "../../../../src/css/App.css";
-// const pos;
+import {ImgContext, position} from '../Context/ImgContext';
+
 
 function ImgIt(props) {
   const [buttonState, setButtonState] = useState(false);
   const [currentIMG, setCurrentImg] = useState("");
+  const [position, setPosition]= useState(); 
   const [dropIMG, setDropIMG] = useState("");
   const [srcImg, setSrcImg] = useState("");
   const { x, y } = useMousePosition();
-
+  
   const [state, setState] = useState({
     controlledPosition: {
       x: 4,
@@ -54,12 +56,14 @@ function ImgIt(props) {
 
   const onStopDrag = (e, ui) => {
     let position = { x: ui.x + ui.deltaX, y: ui.y + ui.deltaY };
+    
     sessionStorage.setItem("card" + e.target.id, JSON.stringify(position));
   };
 
   const controlledPosition = state.controlledPosition;
   return (
     <Draggable
+    id={props.id}
       position={props.position}
       onDrag={onControlledDrag}
       onStop={onStopDrag}
@@ -124,3 +128,5 @@ function ImgIt(props) {
   );
 }
 export default ImgIt;
+
+
