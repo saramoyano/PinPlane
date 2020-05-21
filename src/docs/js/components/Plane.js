@@ -8,36 +8,42 @@ import useForceUpdate from "use-force-update";
 import DragWindow from "./ScrollbyMouse";
 import ImgIt from "./ImgItem";
 import { dragImgItm } from "../pages/App";
+import {positionContext} from '../pages/App';
 
 var scroll = false;
-// function AddNewArray() {
-//   itemsArray.push(new Array(itemsArray[0].length));
-// }
-// function arrayVertical() {
-//   for (let i = 0; i < itemsArray.length; i++) {
-//     itemsArray[i].push(new Array([""]));
-//   }
-// }
-var posArray = itemsArray;
+var posArray = new Array(10);
 function AddNewArray() {
   var x = itemsArray.length;
   x++;
   itemsArray.push(new Array(x));
+  posArray.push(new Array(x));
   var celda;
-  //console.log(itemsArray);
-  //console.log(posArray);
   for (let i = 0; i < itemsArray.length; i++) {
     itemsArray[i].length = x;
-    posArray[i].push(new Array(x));
-    posArray[i].lenght = x;
+    //
+    if(posArray[i] == undefined || posArray[i] == null) {
+      posArray[i] = new Array(x);
+    }else if(posArray[i].length === 0 ){
+      posArray[i] = new Array(x);
+    }
+    posArray[i].length = x;
+    console.log(posArray);
+    //
     for (let j = 0; j < itemsArray[i].length; j++) {
-      if (itemsArray[i][j] !== i + "" + j) {      
-          itemsArray[i][j] = i + "" + j;
+      if (itemsArray[i][j] !== i + "," + j) {      
+          itemsArray[i][j] = i + "," + j;
       }
+      //
+      let tmpstr = i + "" + j;
+      celda = document.getElementById(tmpstr);
+      if(celda != null){
+        posArray[i][j]={y: celda.offsetTop, x: celda.offsetLeft};
+      } 
+      //    
     }
   }
 }
-var idDiv;
+
 function cellRenderer({ columnIndex, key, rowIndex, isScrolling, style }) {
   scroll = isScrolling;
 
@@ -67,6 +73,7 @@ export default function ImgList() {
   const [positionY, setpositionY] = useState(200);
   const [vecY1, setvecY1] = useState(0);
   const [vecX1, setvecX1] = useState(3);
+  const {value,setValue }= useContext(positionContext)
 
   const img = document.getElementById("card1");
 
@@ -97,32 +104,22 @@ export default function ImgList() {
   const handleClick = () => {
     console.log();
     if (img != null) {
-      // var celda = img.parentElement.parentElement;
-      // if (celda.hasChildNodes()) {
-      //   celda.removeChild(celda.firstChild);
         var auxX = vecX1 + 1;
         var auxY = vecY1 + 1;
         setvecX1(auxX);
         setvecY1(auxY);
-      // }
+      
     }
   };
 
   useEffect(() => {
-     
-    //   if(img != null){
-    //     setpositionX(img.parentElement.parentElement.offsetLeft);
-    //     setpositionY(img.parentElement.parentElement.offsetLeft);
-    //     console.log("2do ueff" + positionX + positionY);
-    // }
-
+   
     if (positionX != null && positionX != undefined && positionX != "") {
       if (positionX >= ancho || positionY >= alto) {
-       console.log("entra");
         AddNewArray();
       }
     }
-  }, [img]); //
+  }, [img]); 
 
   const estilo = {
     width: "100px",

@@ -84,8 +84,8 @@ html,
 body,
 #root {
   overflow: visible;
-  height: 1000px;
-  width: 1300px;
+  height: 2000px;
+  width: 2300px;
   margin: 0px;
   padding: 0px;
 }
