@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useContext } from "react";
 import { useDropzone } from "react-dropzone";
 import Draggable from "react-draggable";
 import useMousePosition from "./useMousePosition";
 import "../../../../src/css/App.css";
+import {positionContext} from '../pages/App';
 // const pos;
 
 function ImgIt(props) {
@@ -11,7 +12,7 @@ function ImgIt(props) {
   const [dropIMG, setDropIMG] = useState("");
   const [srcImg, setSrcImg] = useState("");
   const { x, y } = useMousePosition();
-
+  const {setValue }= useContext(positionContext)
   const [state, setState] = useState({
     controlledPosition: {
       x: 4,
@@ -21,6 +22,8 @@ function ImgIt(props) {
   const onControlledDrag = (e, position) => {
     const { x, y } = position; // actualizo la posicion del item
     setState({ controlledPosition: { x, y } });
+    setValue({x:position.x,y:position.y,move:false});
+    e.stopPropagation();
   };
   const onDrop = useCallback((acceptedFiles) => {
     let string = acceptedFiles[0].name.split("\\");
@@ -54,18 +57,26 @@ function ImgIt(props) {
 
   const onStopDrag = (e, ui) => {
     let position = { x: ui.x + ui.deltaX, y: ui.y + ui.deltaY };
+    setValue({x:position.x,y:position.y,move:true})
     sessionStorage.setItem("card" + e.target.id, JSON.stringify(position));
   };
+
 
   const controlledPosition = state.controlledPosition;
   return (
     <Draggable
-      position={props.position}
-      onDrag={onControlledDrag}
-      onStop={onStopDrag}
-      id={props.id}
-      // bounds={".ReactVirtualized__Grid__innerScrollContainer"}
-    >
+    position={props.position}
+    onDrag={(e,position)=>onControlledDrag(e,position)}
+    onStart={(e)=>{
+      e.stopPropagation();
+    }}
+    onStop={onStopDrag}
+    id={props.id}
+    onMouseDown={(e)=>{
+      e.stopPropagation();
+    }}
+    // bounds={".ReactVirtualized__Grid__innerScrollContainer"}
+  >
       <div className="card" id={props.id}>
         <div className="card-image" id={props.id}>
           {!buttonState ? (

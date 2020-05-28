@@ -7,27 +7,35 @@ import useMousePosition from "./useMousePosition";
 import useForceUpdate from "use-force-update";
 import DragWindow from "./ScrollbyMouse";
 import ImgIt from "./ImgItem";
-import { dragImgItm } from "../pages/App";
+import {positionContext} from '../pages/App';
 var scroll = false;
-// function AddNewArray() {
-//   itemsArray.push(new Array(itemsArray[0].length));
-// }
-// function arrayVertical() {
-//   for (let i = 0; i < itemsArray.length; i++) {
-//     itemsArray[i].push(new Array([""]));
-//   }
-// }
+var posArray = new Array(20);
 function AddNewArray() {
   var x = itemsArray.length;
   x++;
-
+  var celda;
+posArray.length = x; 
   itemsArray.push(new Array(x));
   for (let i = 0; i < itemsArray.length; i++) {
+    
     itemsArray[i].length = x;
+
+    if(posArray[i] == undefined || posArray[i] == null) {
+      posArray[i] = new Array(x);
+    }else if(posArray[i].length === 0 ){
+      posArray[i] = new Array(x);
+    }
+    posArray[i].length = x;
+
     for (let j = 0; j < itemsArray[i].length; j++) {
       if (itemsArray[i][j] !== i.toString + "," + j.toString) {
         itemsArray[i][j] = "" + i + j;
       }
+      let tmpstr = i + "" + j;
+      celda = document.getElementById(tmpstr);
+      if(celda != null){
+        posArray[i][j]={y: celda.offsetTop, x: celda.offsetLeft};
+      } 
     }
   }
 }
@@ -53,24 +61,24 @@ function cellRenderer({ columnIndex, key, rowIndex, isScrolling, style }) {
 
 export default function ImgList() {
   const [position1, setposition1] = useState({ x: 0, y: 61 });
-  const [position2, setposition2] = useState({ x: 20, y: 200 });
+  const [position2, setposition2] = useState({ x: 0, y: 0 });
   const [vecY1, setvecY1] = useState(0);
-  const [vecX1, setvecX1] = useState(3);
+  const [vecX1, setvecX1] = useState(7);
+  const {value,setValue }= useContext(positionContext)
   useEffect(() => {
     sessionStorage.setItem("card1", JSON.stringify(position1));
-    sessionStorage.setItem("card2", JSON.stringify(position2));
+    //sessionStorage.setItem("card2", JSON.stringify(position2));
   }, []);
 
-  itemsArray[vecY1][vecX1] = <ImgIt id={1} position={position1} />;
-  itemsArray[1][3] = <ImgIt id={2} position={position2} />;
-
+ // itemsArray[1][3] = <ImgIt id={2} position={position2} />;
+  var imgSize = 600;
   var panel = document.getElementById("root");
   const forceUpdate = useForceUpdate();
   const { x, y } = useMousePosition();
   const ancho = panel.clientWidth;
   const alto = panel.clientHeight;
-  const { value, setValue } = useContext(dragImgItm);
-  var isPossible = scroll === true && x >= ancho - 200;
+  
+  var isPossible = scroll === true && x >= ancho - imgSize;
   DragWindow(value, setValue);
 
   useEffect(() => {
@@ -78,28 +86,32 @@ export default function ImgList() {
     setposition2(JSON.parse(sessionStorage.getItem("card2")));
   }, [sessionStorage.getItem("card1"), sessionStorage.getItem("card2")]);
 
-  // if (isPossible) {
-  //   AddNewArray();
-  // }
+  useEffect(() => {
+    AddNewArray();
+  }, []);
 
   useEffect(() => {
+    AddNewArray();
+    itemsArray[vecY1][vecX1] = <ImgIt id={1} position={position1} />;
     return () => {
       forceUpdate();
     };
-  }, [isPossible]);
+  }, [vecX1, vecY1]);
 
   //In case of error delete this code
 
   useEffect(() => {
-    if (isPossible) {
-      AddNewArray();
-      console.log(itemsArray.length);
-      let vX = vecX1 + 1;
+    if (value.move==true) {
+      let vX = Math.floor(x/ 300);
+      let vY = Math.floor(y/300);
       setvecX1(vX);
+      setvecY1(vY);
+      console.log(JSON.stringify(value));
     }
-  }, [isPossible]);
+  }, [value.move]);
   return (
-    <AutoSizer>
+    <React.Fragment>
+       <AutoSizer>
       {({ height, width }) => (
         <div style={{ height: height, width: width }}>
           <PinPlane
@@ -112,11 +124,12 @@ export default function ImgList() {
             rowCount={itemsArray.length}
             rowHeight={330}
             width={width}
-          >
-            <ImgIt />
-          </PinPlane>
+          ></PinPlane>
         </div>
       )}
     </AutoSizer>
+
+    </React.Fragment>
+   
   );
 }
