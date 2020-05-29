@@ -11,7 +11,7 @@ function ImgIt(props) {
   const [currentIMG, setCurrentImg] = useState("");
   const [dropIMG, setDropIMG] = useState("");
   const [srcImg, setSrcImg] = useState("");
-  const { x, y } = useMousePosition();
+  const { xm, ym } = useMousePosition();
   const {setValue }= useContext(positionContext)
   const [state, setState] = useState({
     controlledPosition: {
@@ -22,7 +22,7 @@ function ImgIt(props) {
   const onControlledDrag = (e, position) => {
     const { x, y } = position; // actualizo la posicion del item
     setState({ controlledPosition: { x, y } });
-    setValue({x:position.x,y:position.y,move:false});
+    setValue({x:xm,y:ym,move:false});
     e.stopPropagation();
   };
   const onDrop = useCallback((acceptedFiles) => {
@@ -57,8 +57,8 @@ function ImgIt(props) {
 
   const onStopDrag = (e, ui) => {
     let position = { x: ui.x + ui.deltaX, y: ui.y + ui.deltaY };
-    setValue({x:position.x,y:position.y,move:true})
-    sessionStorage.setItem("card" + e.target.id, JSON.stringify(position));
+    setValue({x:e.x,y:e.y,move:true})
+    //sessionStorage.setItem("card" + e.target.id, JSON.stringify(position));
   };
 
 
@@ -70,7 +70,7 @@ function ImgIt(props) {
     onStart={(e)=>{
       e.stopPropagation();
     }}
-    onStop={onStopDrag}
+    onStop={(e, ui)=>onStopDrag(e, ui)}
     id={props.id}
     onMouseDown={(e)=>{
       e.stopPropagation();

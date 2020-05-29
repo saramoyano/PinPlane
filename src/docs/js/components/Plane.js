@@ -9,7 +9,7 @@ import DragWindow from "./ScrollbyMouse";
 import ImgIt from "./ImgItem";
 import {positionContext} from '../pages/App';
 var scroll = false;
-var posArray = new Array(20);
+var posArray = new Array(9);
 function AddNewArray() {
   var x = itemsArray.length;
   x++;
@@ -63,10 +63,10 @@ export default function ImgList() {
   const [position1, setposition1] = useState({ x: 0, y: 61 });
   const [position2, setposition2] = useState({ x: 0, y: 0 });
   const [vecY1, setvecY1] = useState(0);
-  const [vecX1, setvecX1] = useState(7);
+  const [vecX1, setvecX1] = useState(0);
   const {value,setValue }= useContext(positionContext)
   useEffect(() => {
-    sessionStorage.setItem("card1", JSON.stringify(position1));
+    sessionStorage.setItem("1", JSON.stringify(position1));
     //sessionStorage.setItem("card2", JSON.stringify(position2));
   }, []);
 
@@ -82,15 +82,16 @@ export default function ImgList() {
   DragWindow(value, setValue);
 
   useEffect(() => {
-    setposition1(JSON.parse(sessionStorage.getItem("card1")));
-    setposition2(JSON.parse(sessionStorage.getItem("card2")));
-  }, [sessionStorage.getItem("card1"), sessionStorage.getItem("card2")]);
+    setposition1(JSON.parse(sessionStorage.getItem("1")));
+ //   setposition2(JSON.parse(sessionStorage.getItem("card2")));
+  }, [sessionStorage.getItem("1")]);
 
   useEffect(() => {
     AddNewArray();
   }, []);
 
   useEffect(() => {
+    console.log("entra aqui: " + vecX1 + vecY1);
     AddNewArray();
     itemsArray[vecY1][vecX1] = <ImgIt id={1} position={position1} />;
     return () => {
@@ -98,17 +99,13 @@ export default function ImgList() {
     };
   }, [vecX1, vecY1]);
 
-  //In case of error delete this code
-
   useEffect(() => {
-    if (value.move==true) {
-      let vX = Math.floor(x/ 300);
-      let vY = Math.floor(y/300);
-      setvecX1(vX);
-      setvecY1(vY);
-      console.log(JSON.stringify(value));
+    if (value.move==true) { 
+      setvecX1(Math.floor(value.x/330));
+      setvecY1(Math.floor(value.y/330));
     }
   }, [value.move]);
+
   return (
     <React.Fragment>
        <AutoSizer>
