@@ -91,7 +91,7 @@ export default function ImgList() {
   }, []);
 
   useEffect(() => {
-    console.log("entra aqui: " + vecX1 + vecY1);
+    console.log("entra aqui: " +vecY1  + vecX1);
     AddNewArray();
     itemsArray[vecY1][vecX1] = <ImgIt id={1} position={position1} />;
     return () => {
